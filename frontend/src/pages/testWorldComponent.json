@@ -1,0 +1,83 @@
+{   
+  "worldName": "testWorld",
+  "worldImage": "testImage",
+  "worldDescription": "testDescription",
+  "worldGenre": "testGenre",
+  "worldSetting": "testSetting",
+  "worldTags": "testTags",
+  "worldRoleplayStyle": "testRoleplayStyle",
+  "worldPOV": "testPOV",
+  "worldCreator": "testCreator",
+  "worldStructure": [
+    {
+      "name": "Earth (After the Fall)",
+      "type": "Realm/Domain",
+      "level": 1,
+      "description": "The earth is a living place",
+      "image": "testImage",
+      "children": [
+        {
+          "name": "Eastern Wastelands",
+          "type": "Territory/Region",
+          "level": 2,
+          "description": "The wastelands are a living place",
+          "image": "testImage",
+          "children": [
+            {
+              "name": "Ruins of New York",
+              "type": "Sector/Province",
+              "level": 3,
+              "description": "The sector is a living place",
+              "image": "testImage",
+              "children": [
+                {
+                  "name": "Midtown Safe Zone",
+                  "type": "District/Subregion",
+                  "level": 4,
+                  "description": "The district is a living place",
+                  "image": "testImage",
+                  "children": [
+                    {
+                      "name": "Survivor's Haven",
+                      "type": "Settlement/Location",
+                      "level": 5,
+                      "description": "The settlement is a living place",
+                      "image": "testImage",
+                      "children": [
+                        {
+                          "name": "Barracks Section",
+                          "type": "Section",
+                          "level": 6,
+                          "description": "The section is a living place",
+                          "image": "testImage",
+                          "children": [
+                            {
+                              "name": "Last Guard Stronghold",
+                              "type": "Building/Facility",
+                              "level": 7,
+                              "description": "The building is a living place",
+                              "image": "testImage",
+                              "children": [
+                                {
+                                  "name": "War Room",
+                                  "type": "Room/Area",
+                                  "level": 8,
+                                  "description": "The room is a living place",
+                                  "image": "testImage"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
