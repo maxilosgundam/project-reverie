@@ -43,8 +43,8 @@ const CreateWorld = () => {
   //for adding a World Component
   const [creationCommand, setCreationCommand] = useState("");
   const [worldStructure, setWorldStructure] = useState([]);
-  const [worldComponent, setWorldComponent] = useState([]);
-  const [worldComponents, setWorldComponents] = useState({});
+  const [worldComponent, setWorldComponent] = useState({});
+  const [worldComponents, setWorldComponents] = useState([]);
   const [newComponents, setNewComponents] = useState([]);
 
   //for adding World Component elements
@@ -92,22 +92,25 @@ const CreateWorld = () => {
   const addNewComponent = async (e, index) => {
     e.preventDefault();
 
-    worldComponent = {
-      worldComponentName,
-      worldComponentType,
-      worldComponentLevel,
-      worldComponentDescription,
-      worldComponentImage,
-      isParent,
-      nestedWorldComponents
-    }
-    setNewComponents([...newComponents, worldComponent]);
-
-    
+    setWorldComponents([
+      ...worldComponents,
+      {
+          worldComponentName,
+          worldComponentType,
+          worldComponentLevel,
+          worldComponentDescription,
+          worldComponentImage,
+          isParent: true,
+          nestedWorldComponents: []
+      }
+  ]);
+    console.log(worldComponents);
   }
 
-  const addNewNestedComponent = async (e, index) => {
+  const addNewNestedComponent = async (e, index, worldComponents) => {
     e.preventDefault();
+
+
 
     nestedWorldComponents = {
       worldComponentName,
@@ -122,19 +125,31 @@ const CreateWorld = () => {
 
 
 
+
   const handleComponentChange = (index, field, value) => {
     
-    setNewComponents(newComponents.map((component, i) => {
+    setWorldComponents(worldComponents.map((component, i) => {
       if (i === index) {
+        //console.log('The current field is ', field);
+        if(field === 'worldComponentType'){
+          //console.log('component type is ', component[field]);
+          component['worldComponentLevel'] = determineComponentLevel(value);
+        }
+        if(field === 'worldComponentLevel'){
+          component[field] = determineComponentLevel(value);
+          //console.log('component level is ', component[field]);
+        }
         return {...component, [field]: value};
-    }
+    } 
+   
       return component;
     }));
   }
 
   const removeComponent = async (e, index) => {
     e.preventDefault();
-    setNewComponents(newComponents.filter((component, i) => i !== index));
+    console.log("remove component is called");
+    setWorldComponents(worldComponents.filter((worldComponent, i) => i !== index));
   }
 
   
@@ -185,6 +200,7 @@ const CreateWorld = () => {
       }
 
     }
+  }
   
   
 
@@ -256,50 +272,52 @@ const CreateWorld = () => {
                         - worldComponentImage: an optional image associated with the world component
                         - childWorldComponent: an array of world components that are children of the current world component
                   */}
-                  {JSON.stringify({worldStructure: worldComponent}, null, 2)}
+                  {JSON.stringify({worldStructure: worldComponents}, null, 2)}
                 </pre>
               </pre>
+              
               <h1 className="text-xl text-gray-800 mb-4">World Components</h1>
 
               {/* This is the button that allows users to add a new world component. It will trigger the addNewComponent function when clicked. */}
-              <button className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded" id = 'addNewComponentButton' onClick={(e)=>addNewComponent(e)}>Add World Component</button>
               <button className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded" id = 'addWorldComponentButton' 
-              onClick={(e)=>handleCreateWorldStructure(e, "new world component")}>ADC</button>
+              onClick={(e)=>handleCreateWorldStructure(e, "new world component")}>Add World Component</button>
 
               {/* This maps over the newComponents array and renders a form for each component. The form includes fields for the component name, type, description, and image. */}
-              {worldComponent.map((component, index) => (
+              {worldComponents && worldComponents.map((worldComponent, index) => (
                 <div key={index} id = {'newComponentForm-${index}'}>
                   {/* This is the header for the component form. It displays the name of the component. */}
-                  <h1 className="text-xl text-gray-800 mb-4">World Component '{component.name}'</h1>
+                  <h1 className="text-xl text-gray-800 mb-4">World Component '{worldComponent.worldComponentName}'</h1>
 
                   {/* This is the field for the component name. It will update the component.name property when changed. */}
-                  <InputField label="World Component Name" id="worldComponentName" type="text" value={component.name} onChange={(value) => handleComponentChange(index, 'worldComponentName', value)} />
+                  <InputField label="World Component Name" id="worldComponentName" type="text" value={worldComponent.worldComponentName} onChange={(value) => handleComponentChange(index, 'worldComponentName', value)} />
 
                   {/* This is the select field for the component type. It will update the component.type property when changed. */}
                   <SelectField 
                     label="World Component Type" 
                     id="worldComponentType" 
-                    value={component.type} 
-                    onChange={(worldComponentType) => handleComponentChange(index, 'worldComponentType', worldComponentType, )} 
+                    value={worldComponent.worldComponentType} 
+                    onChange={(value) => {
+                      handleComponentChange(index, 'worldComponentType', value);                  
+                    }}
                     options={WORLD_COMPONENTS} />
 
                   {/* This is the text area field for the component description. It will update the component.description property when changed. */}
-                  <TextAreaField label="World Component Description" id="worldComponentDescription" value={component.description} onChange={(value) => handleComponentChange(index, 'worldComponentDescription', value)} />
+                  <TextAreaField label="World Component Description" id="worldComponentDescription" value={worldComponent.description} onChange={(value) => handleComponentChange(index, 'worldComponentDescription', value)} />
 
                   {/* This is the field for the component image. It will update the component.image property when changed. */}
-                  <InputField label="World Component Image" id="worldComponentImage" type="text" value={component.image} onChange={(value) => handleComponentChange(index, 'worldComponentImage', value)} />
+                  <InputField label="World Component Image" id="worldComponentImage" type="text" value={worldComponent.image} onChange={(value) => handleComponentChange(index, 'worldComponentImage', value)} />
 
                   {/* This is the button that allows users to delete the world component. It will trigger the removeComponent function when clicked. */}
-                  <button className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => removeComponent(e,index)}>Delete World Component '{component.name}'</button>
+                  <button className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => removeComponent(e,index)}>Delete World Component '{worldComponent.worldComponentName}'</button>
 
-                  <button className = "bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => handleCheckWorldComponent(e,component)}>Check World Component</button>
+                  <button className = "bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded" >Check World Component</button>
 
                   {/* This is the button that allows users to nest a new world component. It will trigger the handleAttachNewComponent function when clicked. */}
-                  <button className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => handleAttachNewComponent(e, index, newComponents)}>Old Button</button>
-                  <button className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => handleNestNewComponent(e, index, newComponents)}>New Button</button>
+                  <button className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded" >Old Button</button>
+                  <button className="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded" >New Button</button>
 
                   {/* This maps over the component.attachedWorldComponent array and renders a form for each component. The form includes fields for the component name. */}
-                  {component.attachedWorldComponent.map((component, index2) => (
+                  {worldComponent.nestedWorldComponents.map((component, index2) => (
                     <div key={index2} id = {'attachNewComponentForm-${index2}'}>
                       {/* This is the header for the component form. It displays the name of the component. */}
                       <h1 className="text-xl text-gray-800 mb-4">Nested World Component '{component.name}'</h1>
@@ -367,5 +385,6 @@ const CreateWorld = () => {
   )
 
 }
+
 
 export default CreateWorld;
